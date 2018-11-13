@@ -1,0 +1,3 @@
+# Execution times
+## PC(Core I5(2.5 GHz) 6 GB RAM) - 1.939 s
+## Arduino Uno - 
