@@ -3,7 +3,6 @@
 #include<math.h>
 #define GOAL 2000000
 
-
 int isPrime(int n){
     long long i = 2;
     long long lim = (long long)sqrt(n);
@@ -15,9 +14,7 @@ int isPrime(int n){
 }
 int main(){
     long long sum = 5;
-
     long long n;
-    printf("calculating...");
     for(n = 4; n < GOAL; n++){
         if(isPrime(n))
             sum += n;

@@ -13,7 +13,6 @@ int main()
     int multiplication;
     int biggest = 0;
     char mult[100];
-
     for (first = 1; first <= 999; first++) {
         for (second = 1; second <= 999; second++) {
             sprintf(mult,"%d" ,(first*second));

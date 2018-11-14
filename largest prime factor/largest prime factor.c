@@ -3,13 +3,14 @@
 #include<math.h>
 
 #define GOAL 600851475143
+#include<math.h>
 
 /**
 * This function checks if there's a divisor >= 2 and < n/2. If so, it's not prime
 **/
 int isPrime(unsigned long long n){
     unsigned long long idx;
-    for(idx = 2; idx < (n/2); idx++){
+    for(idx = 2; idx <= sqrt(n); idx++){
         if(n % idx == 0){
             return 0;
         }
