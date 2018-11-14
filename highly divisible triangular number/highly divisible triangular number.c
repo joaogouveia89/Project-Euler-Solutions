@@ -1,4 +1,3 @@
-
 #include "stdlib.h"
 #include "stdio.h"
 #include "math.h"
@@ -10,13 +9,10 @@ int main() {
   int nod = 0;
   long long son;
   int ref;
-
   for(ref = 0; nod <= 500; ref++){
     son = sumOfNumbers(ref);
     nod = numberOfDivisors(son);
-    printf("\nnod = %i",nod);
   }
-
   printf("\n\nthe number with 500 divisors is = %llu with %i divisors\n\n", son, nod);
   return EXIT_SUCCESS;
 }

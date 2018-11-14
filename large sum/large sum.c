@@ -159,6 +159,5 @@ int main() {
         carrie = popCarrie(carrie);
     }
     printFirst10(result);
-
   return 0;
 }
