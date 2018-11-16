@@ -1,0 +1,6 @@
+1x1 = 2 ways - PASSED
+2x2 = 6 ways - PASSED
+3x3 = 20 ways - PASSED
+4x4 = 70 ways - PASSED
+5x5 = 252 ways - PASSED
+6x6 = 924 ways = PASSED
