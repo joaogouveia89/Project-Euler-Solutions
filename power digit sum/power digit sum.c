@@ -1,38 +1,7 @@
 #include<stdlib.h>
 #include<stdio.h>
-//for this problem I got the sum function for big numbers of large sum
-/**
-*  START OF LARGE SUM INSPIRED
-*/
-#define NEXT_DIGIT 51
 
-#define NUMBER_OF_NUMBERS 100
-#define NUMBERS_LENGHT 49
-
-int charToInt(char c){
-    switch(c){
-    case '0':
-        return 0;
-    case '1':
-        return 1;
-    case '2':
-        return 2;
-    case '3':
-        return 3;
-    case '4':
-        return 4;
-    case '5':
-        return 5;
-    case '6':
-        return 6;
-    case '7':
-        return 7;
-    case '8':
-        return 8;
-    case '9':
-        return 9;
-    }
-}
+#define POWER 1000
 
 typedef struct list TList;
 
@@ -131,16 +100,66 @@ TList* popCarrie(TList* carrie){
     return carrie;
 }
 
-/**
-* END OF LARGE SUM INSPIRED
-*/
-int main(){
-    int currentNumber = 0;
-    int currentDigit = NUMBERS_LENGHT;
-    int sum = 0;
+void freeList(TList* root){
+    TList* aux = root->next;
+    while(root != NULL){
+        free(root);
+        root = aux;
+        if(aux != NULL){
+            aux = aux->next;
+        }        
+    }
+}
 
-    TList* result = push_back(result, 2);
+TList* powerSquare(TList* result){
+    TList* aux = result;
+    TList* finalResult = NULL;
     TList* carrie = NULL;
-    printf("teste");
+    int temp;
+    while(aux != NULL){
+        temp = aux->n * 2;
+        if(carrie != NULL){
+            temp += carrie->n;
+            carrie = popCarrie(carrie);
+        }
+        finalResult = push_back(finalResult, temp%10);
+        if(temp > 9){
+            carrie = generateCarrie(carrie, temp);
+        }
+        aux = aux->next;
+    }
+    //merging the rest of carrie to the result
+    while(carrie != NULL){
+        finalResult = push_back(finalResult, carrie->n);
+        carrie = popCarrie(carrie);
+    }
+    freeList(result);
+    return finalResult;
+}
+
+int sumList(TList* list){
+    int sum = 0;
+    TList* aux = list;
+    while(aux != NULL){
+        sum += aux->n;
+        aux = aux->next;
+    }
+
+    return sum;
+}
+
+int main(){
+    //starting the list
+    TList* result = push_back(result, 2);
+
+    int n, sum;
+
+    for(n = 1; n < POWER; n++){
+        result = powerSquare(result);
+    }
+
+    sum = sumList(result);
+
+    printf("Sum = %i\n", sum);
 }
 
