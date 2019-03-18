@@ -10,6 +10,8 @@ struct model_word{
     String* nextLetter;
 };
 
+
+//TODO: TO IMPROVE PERFORMANCE IN SORTING, USE DOUBLE LINKED LIST
 struct list{
     String* word;
     TList* next;
@@ -45,6 +47,43 @@ void str_print(String* str){
 		printf("%c",aux->c);
 		aux = aux->nextLetter;
 	}
+}
+
+/*
+* return values:
+* -1: fst < snd
+* 0 : fst = snd
+* 1 : fst > snd
+*/
+int compare(String* fst, String* snd){
+	String* itfst = fst;
+	String* itsnd = snd;
+
+	if(fst == NULL && snd == NULL){
+		return 0;
+	}else if(fst == NULL){
+		return -1;
+	}else if(snd == NULL){
+		return 1;
+	}
+
+	while(itfst != NULL && itsnd != NULL){
+		if(itfst->c > itsnd->c){
+			return 1;
+		}else if(itfst->c < itsnd->c){
+			return -1;
+		}
+		itfst = itfst->nextLetter;
+		itsnd = itsnd->nextLetter;
+	}
+
+	if(itfst == NULL && itsnd != NULL){
+		return -1;
+	}else if(itfst != NULL && itsnd == NULL){
+		return 1;
+	}
+
+	return 0;
 }
 
 /*
@@ -116,17 +155,135 @@ TList* get_names(TList* list){
 	return names;
 }
 
-TList* sort(TList* list){
-	
+int list_size(TList* list){
+	TList* aux = list;
+	int counter = 0;
+
+	while(aux != NULL){
+		aux = aux->next;
+		counter++;
+	}
+
+	return counter;
 }
+
+TList* find(TList* list, int position){
+	int cur = 1;
+	TList* match = list;
+
+	while(cur < position){
+		match = match->next;
+		cur++;
+	}
+
+	return match;
+}
+
+TList* swap(TList* list, int from, int to){
+	TList* prevFromList = NULL;
+	TList* prevToList = NULL;
+	TList* aux = list;
+	TList* toList = NULL;
+	TList* fromList = NULL;
+	int sizeList = list_size(list);
+
+	int idx = 1;
+
+	if(from >= to || to > sizeList || from < 0) return list;
+
+	while(idx <= to){
+		if((idx + 1) == from){
+			prevFromList = aux;
+		}
+		if(idx == from){
+			fromList = aux;
+		}
+		if((idx + 1) == to){
+			prevToList = aux;
+		}
+		if(idx == to){
+			toList = aux;
+		}
+		idx++;
+		aux = aux->next;
+	}
+
+	if(toList != NULL && fromList != NULL){
+
+		if(prevToList != NULL){
+			prevToList->next = fromList;
+		}
+
+		if(prevFromList != NULL){
+			prevFromList->next = toList;
+		}
+
+		aux = fromList->next;
+		fromList->next = toList->next;
+		toList->next = aux;
+
+		if(prevFromList == NULL){
+			list = toList;
+		}else if(prevToList == NULL){
+			list = fromList;
+		}
+	}
+	return list;
+}
+
+
+
+//quick sort
+TList* sort(TList* list, int first,int last){
+   int i, j, pivot, compareToPivot;
+   TList* temp = NULL;
+   TList* listi = NULL;
+   TList* listj = NULL;
+   TList* listPivot = NULL;
+   int size = list_size(list);
+
+   if(first < last){
+      i = first + 1;
+      j = last;
+
+      if(i > 0 && i <= size) listi = find(list, i);
+      if(j > 0 && j <= size) listj = find(list, j);
+
+      if(first > 0 && first <= size) listPivot = find(list, first);
+
+      while(i <= j){
+         if(listi != NULL && listPivot != NULL && compare(listi->word, listPivot->word) <= 0){
+           	i++;
+           	listi = listi->next;
+         }
+         else if(listj != NULL && listPivot != NULL && compare(listj->word, listPivot->word) == 1){
+         	j--;
+         	if(j > 0 && j <= size) listj = find(list, j);
+         }
+         else if(i <= j){
+         	list = swap(list, i, j);
+         	i++;
+         	if(i > 0 && i <= size) listi = find(list, i);
+         	j--;
+         	if(j > 0 && j <= size) listj = find(list, j);
+         }
+      }
+      list = swap(list, first, j);
+      list = sort(list, first, j-1);
+      list = sort(list, j+1, last);
+   }
+   return list;
+}
+
+
 
 int main(int argc, char const *argv[])
 {
 	TList* names = NULL;
 
 	names = get_names(names);
-
+	int size = list_size(names);
+	names = sort(names, 1,  size);
 	list_print(names);
-
 	return 0;
 }
