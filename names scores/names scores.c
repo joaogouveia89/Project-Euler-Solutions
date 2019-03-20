@@ -11,10 +11,10 @@ struct model_word{
 };
 
 
-//TODO: TO IMPROVE PERFORMANCE IN SORTING, USE DOUBLE LINKED LIST
 struct list{
     String* word;
     TList* next;
+    TList* previous;
 };
 
 
@@ -94,6 +94,7 @@ TList* add(TList* list, String* word){
 	TList* element = (TList*) malloc(sizeof(TList));
 	element->word = word;
 	element->next = NULL;
+	element->previous = NULL;
 
 	if(list == NULL){
 		list = element;
@@ -102,6 +103,7 @@ TList* add(TList* list, String* word){
 		while(aux->next != NULL){
 			aux = aux->next;
 		}
+		element->previous = aux;
 		aux->next = element;
 	}
 
@@ -116,6 +118,25 @@ void list_print(TList* list){
 		aux = aux->next;
 		printf("\n");
 	}
+}
+
+void debug_list(TList* list){
+	int node = 1;
+
+	TList* aux = list;
+
+	while(aux != NULL){
+		printf("\n------------- NODE %i -------------\n", node);
+		printf("previous = ");
+		if(aux->previous == NULL) printf("NULL"); else str_print(aux->previous->word);
+		printf("\ncontent = ");
+		str_print(aux->word);
+		printf("\nnext = ");
+		if(aux->next == NULL) printf("NULL"); else str_print(aux->next->word);
+		node++;
+		aux = aux->next;
+	}
+	printf("\n");
 }
 
 
@@ -171,7 +192,7 @@ TList* find(TList* list, int position){
 	int cur = 1;
 	TList* match = list;
 
-	while(cur < position){
+	while(match != NULL && cur < position){
 		match = match->next;
 		cur++;
 	}
@@ -180,9 +201,8 @@ TList* find(TList* list, int position){
 }
 
 TList* swap(TList* list, int from, int to){
-	TList* prevFromList = NULL;
-	TList* prevToList = NULL;
 	TList* aux = list;
+	TList* aux2 = NULL;
 	TList* toList = NULL;
 	TList* fromList = NULL;
 	int sizeList = list_size(list);
@@ -192,14 +212,8 @@ TList* swap(TList* list, int from, int to){
 	if(from >= to || to > sizeList || from < 0) return list;
 
 	while(idx <= to){
-		if((idx + 1) == from){
-			prevFromList = aux;
-		}
 		if(idx == from){
 			fromList = aux;
-		}
-		if((idx + 1) == to){
-			prevToList = aux;
 		}
 		if(idx == to){
 			toList = aux;
@@ -209,23 +223,46 @@ TList* swap(TList* list, int from, int to){
 	}
 
 	if(toList != NULL && fromList != NULL){
+		//adjacent case
+		//"MARY","PATRICIA","LINDA","BARBARA","ELIZABETH","JENNIFER","MARIA"
+		if(fromList->next == toList){
+			//as they are adjacents toList->previous = fromList so fromList->next = toList the same rule to fromList->next
+			if(from != 1){
+				fromList->previous->next = toList;
+			}else{
+				list = toList;
+			}
+			
+			if(to != sizeList){
+				toList->next->previous = fromList;
+			}
+			
+			aux = fromList->previous;
+			fromList->previous = toList;
+			toList->previous = aux;
 
-		if(prevToList != NULL){
-			prevToList->next = fromList;
-		}
+			fromList->next = toList->next;
+			toList->next = fromList;
 
-		if(prevFromList != NULL){
-			prevFromList->next = toList;
-		}
+		}/* non adjacent case */else{
+			toList->previous->next = fromList;
+			if(from != 1){
+				fromList->previous->next = toList;
+			}else{
+				list = toList;
+			}
+			if(to != sizeList){
+				toList->next->previous = fromList;
+			}			
+			fromList->next->previous = toList;
 
-		aux = fromList->next;
-		fromList->next = toList->next;
-		toList->next = aux;
+			aux = fromList->previous;
+			fromList->previous = toList->previous;
+			toList->previous = aux;
 
-		if(prevFromList == NULL){
-			list = toList;
-		}else if(prevToList == NULL){
-			list = fromList;
+			aux = fromList->next;
+			fromList->next = toList->next;
+			toList->next = aux;			
 		}
 	}
 	return list;
@@ -258,11 +295,14 @@ TList* sort(TList* list, int first,int last){
          }
          else if(listj != NULL && listPivot != NULL && compare(listj->word, listPivot->word) == 1){
          	j--;
-         	if(j > 0 && j <= size) listj = find(list, j);
+         	listj = listj->previous;
          }
          else if(i <= j){
          	list = swap(list, i, j);
          	i++;
+         	/**
+         	* TODO: FIND A WAY TO REMOVE THESE 2 FINDS FUNCTION TO IMPROVE PERFORMANCE, SIMPLY PUTTING listi->next and listij->previous DOESN'T WORK, DON'T KNOW WHY
+         	*/
          	if(i > 0 && i <= size) listi = find(list, i);
          	j--;
          	if(j > 0 && j <= size) listj = find(list, j);
@@ -285,5 +325,6 @@ int main(int argc, char const *argv[])
 	int size = list_size(names);
 	names = sort(names, 1,  size);
 	list_print(names);
+
 	return 0;
 }
