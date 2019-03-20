@@ -224,7 +224,6 @@ TList* swap(TList* list, int from, int to){
 
 	if(toList != NULL && fromList != NULL){
 		//adjacent case
-		//"MARY","PATRICIA","LINDA","BARBARA","ELIZABETH","JENNIFER","MARIA"
 		if(fromList->next == toList){
 			//as they are adjacents toList->previous = fromList so fromList->next = toList the same rule to fromList->next
 			if(from != 1){
@@ -315,16 +314,42 @@ TList* sort(TList* list, int first,int last){
    return list;
 }
 
+unsigned int str_points(String* name, int positionInList){
+	unsigned int points = 0;
+	String* aux = name;
+	while(aux != NULL){
+		points += ((int)aux->c - 64);
+		aux = aux->nextLetter;
+	}
+	return points * positionInList;
+}
+
+unsigned int points_sum(TList* list){
+	unsigned int sum = 0;
+	TList* aux = list;
+	int position = 1;
+	while(aux != NULL){
+		sum += str_points(aux->word, position);
+		position++;
+		aux = aux->next;
+	}
+	return sum;
+}
 
 
 int main(int argc, char const *argv[])
 {
 	TList* names = NULL;
+	unsigned int points = 0;
 
+	printf("\ngetting names...\n");
 	names = get_names(names);
 	int size = list_size(names);
+	printf("sorting list...\n");
 	names = sort(names, 1,  size);
-	list_print(names);
+	printf("calculating points...\n");
+	points = points_sum(names);
 
+	printf("Result = %d\n", points);
 	return 0;
 }
