@@ -46,7 +46,8 @@ void permute(int* permutation, int start, int n, int* permutationPosition){
 		print(permutation);
 	}
 	*permutationPosition = *permutationPosition + 1;
-	if(start < n){
+	if(start < n && ((*permutationPosition) - 1) != DESIRED_POSITION){
+		
 		for(i = n - 2; i >= start; i--){
 			for(j = i + 1; j < n; j++){
 				swap(permutation, i, j);
@@ -55,6 +56,7 @@ void permute(int* permutation, int start, int n, int* permutationPosition){
 			rotateLeft(permutation, i, n);
 		}
 	}
+	
 }
 
 int main(){
