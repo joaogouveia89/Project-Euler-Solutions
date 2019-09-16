@@ -5,8 +5,9 @@
 int main(int argc, char const *argv[])
 {
 	BigInt* number = NULL;
+	unsigned short a, b;
 
 	number = bi_init_with_data(2);
-	bi_print(number);
+	printf("%i\n", number->size);
 	return 0;
 }

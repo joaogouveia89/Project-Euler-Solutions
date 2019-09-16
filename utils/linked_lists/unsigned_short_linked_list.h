@@ -109,5 +109,15 @@ UnsignedShortLinkedList* usll_init(UnsignedShortLinkedList* root, int n){
 	return root;
 }
 
+int usll_size(UnsignedShortLinkedList* root){
+	UnsignedShortLinkedList* aux = root;
+	int size = 0;
+	while(aux != NULL){
+		size++;
+		aux = aux->next;
+	}
+	return size;
+}
+
 
 #endif
