@@ -8,6 +8,8 @@ int main(int argc, char const *argv[])
 	unsigned short a, b;
 
 	number = bi_init_with_data(2);
-	printf("%i\n", number->size);
+
+	number = bi_mul_to_i(number, 50);
+	usll_print_together(number->data);
 	return 0;
 }
