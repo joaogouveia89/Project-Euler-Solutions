@@ -1,15 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../utils/big_number/big_int.h"
+#include "../utils/linked_lists/big_int_linked_list.h"
 
 int main(int argc, char const *argv[])
 {
 	BigInt* number = NULL;
-	unsigned short a, b;
+	BigInt* number2 = NULL;
+	number = bi_init_with_data(102);
+	number2 = bi_init_with_data(100);
 
-	number = bi_init_with_data(2);
+	int n = bi_compare(number2, number);
 
-	number = bi_mul_to_i(number, 50);
-	usll_print_together(number->data);
+	printf("%i\n", n);
 	return 0;
 }
