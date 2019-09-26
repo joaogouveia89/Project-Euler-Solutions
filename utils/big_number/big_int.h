@@ -64,9 +64,73 @@ UnsignedShortLinkedList* bi_pop_carrie(UnsignedShortLinkedList* carrie){
     return carrie;
 }
 
-BigInt* bi_sum_int(BigInt* bi, int n){
-	
+
+BigInt* bi_mul_to_i(BigInt* bi, int times){
+	UnsignedShortLinkedList* aux = bi->data;
+    UnsignedShortLinkedList* finalResult = NULL;
+    UnsignedShortLinkedList* carrie = NULL;
+    int temp;
+    while(aux != NULL){
+        temp = aux->data * times;
+        if(carrie != NULL){
+            temp += carrie->data;
+            carrie = bi_pop_carrie(carrie);
+        }
+        finalResult = usll_push_back(finalResult, temp%10);
+        if(temp > 9){
+            carrie = bi_generate_carrie(carrie, temp);
+        }
+        aux = aux->next;
+    }
+    //merging the rest of carrie to the result
+    while(carrie != NULL){
+        finalResult = usll_push_back(finalResult, carrie->data);
+        carrie = bi_pop_carrie(carrie);
+    }
+    usll_free_list(bi->data);
+    bi->data = finalResult;
+    bi->size = usll_size(bi->data);
+    return bi;
 }
 
+BigInt* int_pow_to_bi(int a, int b){
+	int idx;
+	BigInt* bi = NULL;
 
+	bi = bi_init_with_data(a);
+	for(idx = 0; idx < b; idx++){
+		bi = bi_mul_to_i(bi, a);
+	}
+	return bi;
+}
+
+/*
+* b1 < b2 ----- returns -1
+* b1 = b2 ----- returns 0
+* b1 > b2 ----- returns 1
+*/
+int bi_compare(BigInt* bi1, BigInt* bi2){
+	UnsignedShortLinkedList* it1 = bi1->data;
+	UnsignedShortLinkedList* it2 = bi2->data;
+	int response;
+
+	if(bi1->size > bi2->size){
+		response =  1;
+	}else if(bi1->size < bi2->size){
+		response = -1;
+	}else{
+		response = 0;
+		while(it1 != NULL && it2 != NULL){
+			if(it1->data > it2->data){
+				response = 1;
+			}else if(it1->data < it2->data){
+				response = -1;
+			}
+			it1 = it1->next;
+			it2 = it2->next;
+		}
+	}
+
+	return response;
+}
 #endif

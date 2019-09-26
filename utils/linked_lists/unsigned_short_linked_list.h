@@ -119,5 +119,16 @@ int usll_size(UnsignedShortLinkedList* root){
 	return size;
 }
 
+void usll_free_list(UnsignedShortLinkedList* root){
+    UnsignedShortLinkedList* aux = root->next;
+    while(root != NULL){
+        free(root);
+        root = aux;
+        if(aux != NULL){
+            aux = aux->next;
+        }
+    }
+}
+
 
 #endif
